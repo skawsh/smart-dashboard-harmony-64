@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ArrowDownIcon, Smartphone, RefreshCcw } from 'lucide-react';
+import { ArrowDownIcon, ArrowUpIcon, Smartphone, RefreshCcw } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Legend, Cell, LabelList } from 'recharts';
 import { Button } from '@/components/ui/button';
@@ -26,13 +26,13 @@ const touchpointData: TouchpointData[] = [
   { time: '02:00-08:00', country: 'AT', touchpoint: 'Tablet', today: 101, yesterday: 136, difference: -35, percentage: -25.74 },
 ];
 
-// Updated chart configuration with better matching colors
+// Enhanced chart configuration with more distinct, vibrant colors
 const chartConfig = {
-  IosApp: { color: '#4169E1', label: 'iOS App' },      // Royal blue for iOS
-  AndroidApp: { color: '#10b981', label: 'Android App' }, // Green for Android
-  Mobile: { color: '#3b82f6', label: 'Mobile' },       // Blue for Mobile
-  Desktop: { color: '#8b5cf6', label: 'Desktop' },     // Purple for Desktop
-  Tablet: { color: '#f59e0b', label: 'Tablet' },       // Orange for Tablet
+  IosApp: { color: '#4361EE', label: 'iOS App' },      // Bright blue for iOS
+  AndroidApp: { color: '#4CC9F0', label: 'Android App' }, // Cyan for Android
+  Mobile: { color: '#F72585', label: 'Mobile' },       // Magenta for Mobile
+  Desktop: { color: '#7209B7', label: 'Desktop' },     // Deep purple for Desktop
+  Tablet: { color: '#F7B801', label: 'Tablet' },       // Gold for Tablet
 };
 
 // Helper function to get a lighter version of a color for the "Yesterday" bars
@@ -43,15 +43,15 @@ const getLighterColor = (color: string): string => {
 const getTouchpointIcon = (touchpoint: string): string => {
   switch (touchpoint) {
     case 'Mobile':
-      return 'bg-blue-50 text-blue-600';
+      return 'bg-pink-50 text-pink-600';
     case 'AndroidApp':
-      return 'bg-green-50 text-green-600';
+      return 'bg-cyan-50 text-cyan-600';
     case 'Desktop':
       return 'bg-purple-50 text-purple-600';
     case 'Tablet':
-      return 'bg-orange-50 text-orange-600';
+      return 'bg-amber-50 text-amber-600';
     case 'IosApp':
-      return 'bg-indigo-50 text-indigo-600';
+      return 'bg-blue-50 text-blue-600';
     default:
       return 'bg-gray-100 text-gray-700';
   }
@@ -84,67 +84,84 @@ const TouchpointComparison: React.FC = () => {
     return value?.toString() || '0';
   };
 
+  // Sort data by today's values for better visualization
+  const sortedChartData = [...chartData].sort((a, b) => b.today - a.today);
+
   return (
     <div className="w-full">
-      <div className="flex justify-end mb-4 gap-2">
+      <div className="flex justify-between mb-4 gap-2">
+        <div className="flex items-center text-sm text-gray-500">
+          <span className="font-medium">Total Orders Today:</span> 
+          <span className="ml-1 font-bold text-blue-600">
+            {sortedChartData.reduce((sum, item) => sum + item.today, 0).toLocaleString()}
+          </span>
+        </div>
         <div className="flex items-center gap-2">
-          <Button 
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className={cn(
+                "text-xs px-3 py-1 h-8", 
+                comparison === 'yesterday' ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-transparent"
+              )}
+              onClick={() => setComparison('yesterday')}
+            >
+              Compare with Yesterday
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className={cn(
+                "text-xs px-3 py-1 h-8", 
+                comparison === 'difference' ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-transparent"
+              )}
+              onClick={() => setComparison('difference')}
+            >
+              Show Difference
+            </Button>
+          </div>
+          <Button
             variant="outline" 
-            size="sm" 
-            className={cn(
-              "text-xs px-3 py-1 h-8", 
-              comparison === 'yesterday' ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-transparent"
-            )}
-            onClick={() => setComparison('yesterday')}
+            size="sm"
+            className="gap-1 text-xs px-3 py-1 h-8"
+            onClick={() => setViewMode(viewMode === 'chart' ? 'table' : 'chart')}
           >
-            Compare with Yesterday
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className={cn(
-              "text-xs px-3 py-1 h-8", 
-              comparison === 'difference' ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-transparent"
-            )}
-            onClick={() => setComparison('difference')}
-          >
-            Show Difference
+            <RefreshCcw size={14} />
+            {viewMode === 'chart' ? 'Table View' : 'Chart View'}
           </Button>
         </div>
-        <Button
-          variant="outline" 
-          size="sm"
-          className="gap-1 text-xs px-3 py-1 h-8"
-          onClick={() => setViewMode(viewMode === 'chart' ? 'table' : 'chart')}
-        >
-          <RefreshCcw size={14} />
-          {viewMode === 'chart' ? 'Table View' : 'Chart View'}
-        </Button>
       </div>
 
       {viewMode === 'chart' ? (
         <ChartContainer
-          className="w-full h-[350px]"
+          className="w-full h-[400px]"
           config={chartConfig}
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 30, bottom: 70 }}
+              data={sortedChartData}
+              margin={{ top: 20, right: 30, left: 35, bottom: 70 }}
+              barCategoryGap={10}
+              barGap={4}
             >
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
               <XAxis 
                 dataKey="name"
-                tick={{ fontSize: 12 }}
+                tick={{ fontSize: 12, fill: "#64748b" }}
                 angle={-45}
                 textAnchor="end"
                 tickMargin={15}
+                axisLine={{ stroke: "#e2e8f0" }}
               />
               <YAxis 
-                tick={{ fontSize: 12 }}
+                tick={{ fontSize: 12, fill: "#64748b" }}
                 tickFormatter={(value) => typeof value === 'number' ? `${(value / 1000).toFixed(0)}k` : `${value}`}
+                axisLine={{ stroke: "#e2e8f0" }}
+                tickLine={{ stroke: "#e2e8f0" }}
               />
               <ChartTooltip
+                cursor={{ fill: 'rgba(224, 231, 255, 0.2)' }}
                 content={
                   <ChartTooltipContent
                     labelKey="touchpoint"
@@ -168,15 +185,16 @@ const TouchpointComparison: React.FC = () => {
                 name="Today" 
                 fill="#3b82f6"
                 radius={[4, 4, 0, 0]}
+                maxBarSize={50}
               >
-                {chartData.map((entry, index) => (
+                {sortedChartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={getBarColor(entry.touchpoint)} />
                 ))}
                 <LabelList 
                   dataKey="today" 
                   position="top" 
                   formatter={(value: any) => formatValueSafely(value)}
-                  style={{ fontSize: 11, fill: '#6b7280' }}
+                  style={{ fontSize: 11, fill: '#6b7280', fontWeight: 500 }}
                 />
               </Bar>
               
@@ -186,8 +204,9 @@ const TouchpointComparison: React.FC = () => {
                   name="Yesterday" 
                   fill="#94a3b8" 
                   radius={[4, 4, 0, 0]}
+                  maxBarSize={50}
                 >
-                  {chartData.map((entry, index) => (
+                  {sortedChartData.map((entry, index) => (
                     <Cell 
                       key={`cell-yesterday-${index}`} 
                       fill={getLighterColor(getBarColor(entry.touchpoint))}
@@ -198,56 +217,84 @@ const TouchpointComparison: React.FC = () => {
                 <Bar 
                   dataKey="difference" 
                   name="Difference" 
-                  fill="#ef4444" 
                   radius={[4, 4, 0, 0]}
+                  maxBarSize={50}
                 >
-                  {chartData.map((entry, index) => (
+                  {sortedChartData.map((entry, index) => (
                     <Cell 
                       key={`cell-difference-${index}`} 
                       fill={entry.difference < 0 ? "#ef4444" : "#22C55E"}
                     />
                   ))}
+                  <LabelList 
+                    dataKey="difference" 
+                    position="top"
+                    formatter={(value: any) => {
+                      if (typeof value === 'number') {
+                        const formattedValue = Math.abs(value) >= 1000 
+                          ? `${(value / 1000).toFixed(1)}k` 
+                          : value.toString();
+                        return value < 0 ? formattedValue : `+${formattedValue}`;
+                      }
+                      return value?.toString() || '0';
+                    }}
+                    style={{ fontSize: 11, fontWeight: 500 }}
+                  />
                 </Bar>
               )}
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
       ) : (
-        <div>
+        <div className="rounded-lg border border-gray-100 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
-                <th className="text-left py-2 font-medium text-gray-600">Time</th>
-                <th className="text-left py-2 font-medium text-gray-600">
+              <tr className="bg-gray-50 border-b border-gray-100">
+                <th className="text-left py-2.5 px-3 font-medium text-gray-600">Time</th>
+                <th className="text-left py-2.5 px-3 font-medium text-gray-600">
                   <div className="flex items-center gap-1">
                     <Smartphone size={14} />
                     <span>Touchpoint</span>
                   </div>
                 </th>
-                <th className="text-right py-2 font-medium text-gray-600">Today</th>
-                <th className="text-right py-2 font-medium text-gray-600">Yesterday</th>
-                <th className="text-right py-2 font-medium text-gray-600">Difference</th>
-                <th className="text-right py-2 font-medium text-gray-600">Change</th>
+                <th className="text-right py-2.5 px-3 font-medium text-gray-600">Today</th>
+                <th className="text-right py-2.5 px-3 font-medium text-gray-600">Yesterday</th>
+                <th className="text-right py-2.5 px-3 font-medium text-gray-600">Difference</th>
+                <th className="text-right py-2.5 px-3 font-medium text-gray-600">Change</th>
               </tr>
             </thead>
             <tbody>
-              {touchpointData.map((item, index) => (
+              {[...touchpointData].sort((a, b) => b.today - a.today).map((item, index) => (
                 <tr key={index} className="border-b border-gray-50 hover:bg-gray-50/50">
-                  <td className="py-2.5">{item.time}</td>
-                  <td className="py-2.5">
+                  <td className="py-2.5 px-3">{item.time}</td>
+                  <td className="py-2.5 px-3">
                     <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getTouchpointIcon(item.touchpoint)}`}>
-                      {item.touchpoint}
+                      {chartConfig[item.touchpoint as keyof typeof chartConfig]?.label || item.touchpoint}
                     </span>
                   </td>
-                  <td className="py-2.5 text-right">{item.today.toLocaleString()}</td>
-                  <td className="py-2.5 text-right">{item.yesterday.toLocaleString()}</td>
-                  <td className="py-2.5 text-right">{item.difference.toLocaleString()}</td>
-                  <td className="py-2.5 text-right">
+                  <td className="py-2.5 px-3 text-right font-medium">{item.today.toLocaleString()}</td>
+                  <td className="py-2.5 px-3 text-right text-gray-600">{item.yesterday.toLocaleString()}</td>
+                  <td className="py-2.5 px-3 text-right font-medium">
+                    <span className={item.difference < 0 ? "text-red-600" : "text-green-600"}>
+                      {item.difference < 0 ? "" : "+"}
+                      {item.difference.toLocaleString()}
+                    </span>
+                  </td>
+                  <td className="py-2.5 px-3 text-right">
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger className="ml-auto flex items-center gap-1 text-error-600">
-                          <ArrowDownIcon size={14} />
-                          {Math.abs(item.percentage).toFixed(2)}%
+                        <TooltipTrigger className="ml-auto flex items-center gap-1">
+                          {item.percentage < 0 ? (
+                            <span className="flex items-center text-red-600">
+                              <ArrowDownIcon size={14} />
+                              {Math.abs(item.percentage).toFixed(2)}%
+                            </span>
+                          ) : (
+                            <span className="flex items-center text-green-600">
+                              <ArrowUpIcon size={14} />
+                              {item.percentage.toFixed(2)}%
+                            </span>
+                          )}
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>Yesterday: {item.yesterday.toLocaleString()}</p>
