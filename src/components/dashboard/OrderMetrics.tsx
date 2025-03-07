@@ -2,6 +2,7 @@
 import React from 'react';
 import { ArrowDownIcon, BarChart3Icon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface OrderComparisonData {
   country: string;
@@ -30,22 +31,22 @@ const OrderMetrics: React.FC = () => {
       </div>
       
       <div>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-gray-100">
-              <th className="text-left py-2 font-medium text-gray-600">Country</th>
-              <th className="text-right py-2 font-medium text-gray-600">Today</th>
-              <th className="text-right py-2 font-medium text-gray-600">Yesterday</th>
-              <th className="text-right py-2 font-medium text-gray-600">Change</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table>
+          <TableHeader>
+            <TableRow className="border-b border-gray-100">
+              <TableHead className="font-medium text-gray-600">Country</TableHead>
+              <TableHead className="text-right font-medium text-gray-600">Today</TableHead>
+              <TableHead className="text-right font-medium text-gray-600">Yesterday</TableHead>
+              <TableHead className="text-right font-medium text-gray-600">Change</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {orderData.map((item, index) => (
-              <tr key={index} className="border-b border-gray-50 hover:bg-gray-50/50">
-                <td className="py-2.5 font-medium">{item.country}</td>
-                <td className="py-2.5 text-right">{item.today.toLocaleString()}</td>
-                <td className="py-2.5 text-right">{item.yesterday.toLocaleString()}</td>
-                <td className="py-2.5 text-right">
+              <TableRow key={index} className="border-b border-gray-50 hover:bg-gray-50/50">
+                <TableCell className="font-medium">{item.country}</TableCell>
+                <TableCell className="text-right">{item.today.toLocaleString()}</TableCell>
+                <TableCell className="text-right">{item.yesterday.toLocaleString()}</TableCell>
+                <TableCell className="text-right">
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger className="ml-auto flex items-center gap-1 text-error-600">
@@ -58,11 +59,11 @@ const OrderMetrics: React.FC = () => {
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );
