@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { ArrowDownIcon, ArrowUpIcon, CreditCardIcon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { RegionContext } from '@/pages/Index';
 
 interface PaymentComparisonData {
   time: string;
@@ -16,7 +17,7 @@ interface PaymentComparisonData {
   impact: 'Medium' | 'Normal';
 }
 
-// Updated data from the provided image
+// Updated data from the provided image - All Instances
 const paymentModeData: PaymentComparisonData[] = [
   { time: '02:00-08:00', country: 'CA', payMode: 'Adyen', today: 1187, yesterday: 3727, difference: -2540, percentage: -68.15, impact: 'Medium' },
   { time: '02:00-08:00', country: 'US', payMode: 'Adyen', today: 2149, yesterday: 4468, difference: -2319, percentage: -51.9, impact: 'Medium' },
@@ -33,6 +34,17 @@ const paymentModeData: PaymentComparisonData[] = [
   { time: '02:00-08:00', country: 'US', payMode: 'applepay', today: 1370, yesterday: 2722, difference: -1352, percentage: -49.67, impact: 'Normal' },
   { time: '02:00-08:00', country: 'AT', payMode: 'Klarna', today: 1130, yesterday: 1983, difference: -853, percentage: -43.02, impact: 'Normal' },
   { time: '02:00-08:00', country: 'NL', payMode: 'IDEAL2', today: 778, yesterday: 1466, difference: -688, percentage: -46.93, impact: 'Normal' },
+];
+
+// EU1 region-specific data extracted from the image
+const EU1PaymentModeData: PaymentComparisonData[] = [
+  { time: '02:00-08:00', country: 'FR', payMode: 'PayPal', today: 173, yesterday: 195, difference: -22, percentage: -11.28, impact: 'Normal' },
+  { time: '02:00-08:00', country: 'FR', payMode: 'Adyen', today: 42, yesterday: 58, difference: -16, percentage: -27.59, impact: 'Medium' },
+  { time: '02:00-08:00', country: 'FR', payMode: 'Klarna', today: 4, yesterday: 5, difference: -1, percentage: -20.00, impact: 'Medium' },
+  { time: '02:00-08:00', country: 'IE', payMode: 'GiftCard', today: 2, yesterday: 6, difference: -4, percentage: -66.67, impact: 'Medium' },
+  { time: '02:00-08:00', country: 'FR', payMode: 'GiftCard', today: 7, yesterday: 7, difference: 0, percentage: 0.00, impact: 'Normal' },
+  { time: '02:00-08:00', country: 'GB', payMode: 'Adyen', today: 46, yesterday: 43, difference: 3, percentage: 6.98, impact: 'Normal' },
+  { time: '02:00-08:00', country: 'FR', payMode: 'applepay', today: 26, yesterday: 25, difference: 1, percentage: 4.00, impact: 'Normal' },
 ];
 
 // Define fixed colors for each payment method
@@ -55,6 +67,11 @@ const getPaymentColor = (payMode: string): string => {
 };
 
 const PaymentModeComparison: React.FC = () => {
+  const { selectedRegion } = useContext(RegionContext);
+  
+  // Select data based on region
+  const dataToDisplay = selectedRegion === 'EU1' ? EU1PaymentModeData : paymentModeData;
+  
   return (
     <div className="flex flex-col h-full">
       <ScrollArea className="h-[500px]">
@@ -76,7 +93,7 @@ const PaymentModeComparison: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paymentModeData.map((item, index) => (
+            {dataToDisplay.map((item, index) => (
               <TableRow key={index} className="border-b border-gray-50 hover:bg-gray-50/50">
                 <TableCell className="font-medium py-1.5">{item.country}</TableCell>
                 <TableCell className="py-1.5">
@@ -95,23 +112,44 @@ const PaymentModeComparison: React.FC = () => {
                 </TableCell>
                 <TableCell className="text-right py-1.5">{item.today.toLocaleString()}</TableCell>
                 <TableCell className="text-right py-1.5">{item.yesterday.toLocaleString()}</TableCell>
-                <TableCell className="text-right py-1.5 text-error-600">{item.difference.toLocaleString()}</TableCell>
+                <TableCell className="text-right py-1.5">
+                  <span className={
+                    item.difference < 0 
+                      ? "text-error-600" 
+                      : item.difference > 0 
+                        ? "text-green-600" 
+                        : "text-gray-600"
+                  }>
+                    {item.difference === 0 
+                      ? '0' 
+                      : `${item.difference > 0 ? '+' : ''}${item.difference.toLocaleString()}`}
+                  </span>
+                </TableCell>
                 <TableCell className="text-right py-1.5">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger className="ml-auto flex items-center gap-1 text-error-600">
+                      <TooltipTrigger className="ml-auto flex items-center gap-1">
                         {item.percentage < 0 ? (
-                          <ArrowDownIcon size={14} />
+                          <span className="flex items-center text-error-600">
+                            <ArrowDownIcon size={14} />
+                            {Math.abs(item.percentage).toFixed(1)}%
+                          </span>
+                        ) : item.percentage > 0 ? (
+                          <span className="flex items-center text-green-600">
+                            <ArrowUpIcon size={14} />
+                            {item.percentage.toFixed(1)}%
+                          </span>
                         ) : (
-                          <ArrowUpIcon size={14} className="text-green-600" />
+                          <span className="text-gray-600">0.00%</span>
                         )}
-                        {Math.abs(item.percentage).toFixed(1)}%
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>
                           {item.percentage < 0 
                             ? `Order decrease of ${Math.abs(item.percentage).toFixed(2)}% compared to yesterday`
-                            : `Order increase of ${Math.abs(item.percentage).toFixed(2)}% compared to yesterday`
+                            : item.percentage > 0
+                              ? `Order increase of ${item.percentage.toFixed(2)}% compared to yesterday`
+                              : 'No change compared to yesterday'
                           }
                         </p>
                       </TooltipContent>

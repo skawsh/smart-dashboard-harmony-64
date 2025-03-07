@@ -1,11 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { ArrowDownIcon, ArrowUpIcon, Smartphone, RefreshCcw } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Legend, Cell, LabelList } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { RegionContext } from '@/pages/Index';
 
 interface TouchpointData {
   time: string;
@@ -17,13 +18,22 @@ interface TouchpointData {
   percentage: number;
 }
 
-// Updated data from the image
+// Updated data from the image - All Instances
 const touchpointData: TouchpointData[] = [
   { time: '02:00-08:00', country: 'DE', touchpoint: 'IosApp', today: 22927, yesterday: 39098, difference: -16171, percentage: -41.36 },
   { time: '02:00-08:00', country: 'US', touchpoint: 'AndroidApp', today: 8184, yesterday: 12536, difference: -4352, percentage: -34.72 },
   { time: '02:00-08:00', country: 'CA', touchpoint: 'Mobile', today: 7403, yesterday: 8410, difference: -1007, percentage: -11.97 },
   { time: '02:00-08:00', country: 'NL', touchpoint: 'Desktop', today: 2709, yesterday: 3515, difference: -806, percentage: -22.93 },
   { time: '02:00-08:00', country: 'AT', touchpoint: 'Tablet', today: 101, yesterday: 136, difference: -35, percentage: -25.74 },
+];
+
+// EU1 region-specific data from the image
+const EU1TouchpointData: TouchpointData[] = [
+  { time: '02:00-08:00', country: 'FR', touchpoint: 'Mobile', today: 234, yesterday: 248, difference: -14, percentage: -5.65 },
+  { time: '02:00-08:00', country: 'FR', touchpoint: 'AndroidApp', today: 156, yesterday: 124, difference: 32, percentage: 25.81 },
+  { time: '02:00-08:00', country: 'GB', touchpoint: 'IosApp', today: 142, yesterday: 123, difference: 19, percentage: 15.45 },
+  { time: '02:00-08:00', country: 'FR', touchpoint: 'Desktop', today: 80, yesterday: 83, difference: -3, percentage: -3.61 },
+  { time: '02:00-08:00', country: 'IE', touchpoint: 'Tablet', today: 24, yesterday: 18, difference: 6, percentage: 33.33 },
 ];
 
 // Enhanced chart configuration with more distinct, vibrant colors
@@ -64,9 +74,13 @@ const getBarColor = (touchpoint: string): string => {
 const TouchpointComparison: React.FC = () => {
   const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
   const [comparison, setComparison] = useState<'yesterday' | 'difference'>('yesterday');
+  const { selectedRegion } = useContext(RegionContext);
+
+  // Select data based on region
+  const dataToUse = selectedRegion === 'EU1' ? EU1TouchpointData : touchpointData;
 
   // Transform data for the chart
-  const chartData = touchpointData.map(item => ({
+  const chartData = dataToUse.map(item => ({
     touchpoint: item.touchpoint,
     country: item.country,
     today: item.today,
@@ -79,7 +93,7 @@ const TouchpointComparison: React.FC = () => {
   // Function to format values in the chart safely
   const formatValueSafely = (value: number | string | undefined): string => {
     if (typeof value === 'number') {
-      return `${(value / 1000).toFixed(1)}k`;
+      return value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value.toString();
     }
     return value?.toString() || '0';
   };
@@ -156,7 +170,7 @@ const TouchpointComparison: React.FC = () => {
               />
               <YAxis 
                 tick={{ fontSize: 12, fill: "#64748b" }}
-                tickFormatter={(value) => typeof value === 'number' ? `${(value / 1000).toFixed(0)}k` : `${value}`}
+                tickFormatter={(value) => typeof value === 'number' ? formatValueSafely(value) : `${value}`}
                 axisLine={{ stroke: "#e2e8f0" }}
                 tickLine={{ stroke: "#e2e8f0" }}
               />
@@ -264,7 +278,7 @@ const TouchpointComparison: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {[...touchpointData].sort((a, b) => b.today - a.today).map((item, index) => (
+              {[...dataToUse].sort((a, b) => b.today - a.today).map((item, index) => (
                 <tr key={index} className="border-b border-gray-50 hover:bg-gray-50/50">
                   <td className="py-2.5 px-3">{item.time}</td>
                   <td className="py-2.5 px-3">
