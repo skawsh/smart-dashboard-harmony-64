@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ChevronDownIcon, LayoutDashboardIcon, LightbulbIcon, RefreshCcwIcon } from 'lucide-react';
 import DashboardCard from '@/components/dashboard/DashboardCard';
@@ -74,44 +73,47 @@ const Index = () => {
           </div>
         </div>
         
-        {/* Dashboard Grid - Changed to a more spaced out layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* First column */}
-          <DashboardCard title="Order Comparison (Today vs Yesterday)" animation="animate-fade-in">
-            <OrderMetrics />
-          </DashboardCard>
-          
-          <DashboardCard title="Touchpoint Wise Orders Comparison" animation="animate-fade-in-delay-1">
-            <TouchpointComparison />
-          </DashboardCard>
-          
-          <DashboardCard title="Payment Mode Wise Orders Comparison" animation="animate-fade-in-delay-1">
+        {/* REARRANGED Dashboard Grid */}
+        <div className="grid grid-cols-1 gap-8">
+          {/* Payment Mode Comparison at the top, full width */}
+          <DashboardCard title="Payment Mode Wise Orders Comparison" animation="animate-fade-in" className="h-[600px]">
             <PaymentModeComparison />
           </DashboardCard>
           
-          <DashboardCard title="Minutes since last order (Payment mode wise)" animation="animate-fade-in-delay-2">
-            <MinutesSinceLastOrder />
-          </DashboardCard>
-          
-          <DashboardCard title="Success Rate - Based on Third Party" animation="animate-fade-in-delay-2">
-            <SuccessRate />
-          </DashboardCard>
-          
-          <DashboardCard title="Current Pod Count" animation="animate-fade-in-delay-2">
-            <PodCount />
-          </DashboardCard>
-          
-          <DashboardCard title="Hybris CPU Utilization" animation="animate-fade-in-delay-3">
-            <CpuUtilization />
-          </DashboardCard>
-          
-          <DashboardCard title="URI Response Time" animation="animate-fade-in-delay-3">
-            <ResponseTime />
-          </DashboardCard>
-          
-          <DashboardCard title="Third-Party Read Timeout/Connection Timeout" className="lg:col-span-2" animation="animate-fade-in-delay-4">
-            <ThirdPartyTimeout />
-          </DashboardCard>
+          {/* Rest of the dashboard in a 2 column layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <DashboardCard title="Order Comparison (Today vs Yesterday)" animation="animate-fade-in">
+              <OrderMetrics />
+            </DashboardCard>
+            
+            <DashboardCard title="Touchpoint Wise Orders Comparison" animation="animate-fade-in-delay-1">
+              <TouchpointComparison />
+            </DashboardCard>
+            
+            <DashboardCard title="Minutes since last order (Payment mode wise)" animation="animate-fade-in-delay-2">
+              <MinutesSinceLastOrder />
+            </DashboardCard>
+            
+            <DashboardCard title="Success Rate - Based on Third Party" animation="animate-fade-in-delay-2">
+              <SuccessRate />
+            </DashboardCard>
+            
+            <DashboardCard title="Current Pod Count" animation="animate-fade-in-delay-2">
+              <PodCount />
+            </DashboardCard>
+            
+            <DashboardCard title="Hybris CPU Utilization" animation="animate-fade-in-delay-3">
+              <CpuUtilization />
+            </DashboardCard>
+            
+            <DashboardCard title="URI Response Time" animation="animate-fade-in-delay-3">
+              <ResponseTime />
+            </DashboardCard>
+            
+            <DashboardCard title="Third-Party Read Timeout/Connection Timeout" className="lg:col-span-2" animation="animate-fade-in-delay-4">
+              <ThirdPartyTimeout />
+            </DashboardCard>
+          </div>
         </div>
       </main>
       

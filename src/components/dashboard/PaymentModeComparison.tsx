@@ -1,9 +1,9 @@
 
-import React, { useState } from 'react';
-import { ArrowDownIcon, CreditCardIcon, ChevronRightIcon, ChevronLeftIcon } from 'lucide-react';
+import React from 'react';
+import { ArrowDownIcon, CreditCardIcon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface PaymentComparisonData {
   time: string;
@@ -49,47 +49,29 @@ const getPaymentColor = (payMode: string): string => {
   return colors[payMode] || 'bg-gray-100 text-gray-700';
 };
 
-const ITEMS_PER_PAGE = 7;
-
 const PaymentModeComparison: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(0);
-
-  const totalPages = Math.ceil(paymentModeData.length / ITEMS_PER_PAGE);
-  const paginatedData = paymentModeData.slice(
-    currentPage * ITEMS_PER_PAGE, 
-    (currentPage + 1) * ITEMS_PER_PAGE
-  );
-
-  const nextPage = () => {
-    setCurrentPage(prev => (prev + 1) % totalPages);
-  };
-
-  const prevPage = () => {
-    setCurrentPage(prev => (prev - 1 + totalPages) % totalPages);
-  };
-
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-grow">
+      <ScrollArea className="h-[500px]">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-gray-100">
               <TableHead className="font-medium text-gray-600 w-[60px]">Country</TableHead>
-              <TableHead className="font-medium text-gray-600 w-[90px]">
+              <TableHead className="font-medium text-gray-600 w-[110px]">
                 <div className="flex items-center gap-1">
                   <CreditCardIcon size={14} />
                   <span>Payment</span>
                 </div>
               </TableHead>
-              <TableHead className="text-right font-medium text-gray-600 w-[70px]">Today</TableHead>
-              <TableHead className="text-right font-medium text-gray-600 w-[80px]">Yesterday</TableHead>
+              <TableHead className="text-right font-medium text-gray-600 w-[90px]">Today</TableHead>
+              <TableHead className="text-right font-medium text-gray-600 w-[90px]">Yesterday</TableHead>
               <TableHead className="text-right font-medium text-gray-600 w-[70px]">Diff</TableHead>
-              <TableHead className="text-right font-medium text-gray-600 w-[70px]">Change</TableHead>
+              <TableHead className="text-right font-medium text-gray-600 w-[90px]">Change</TableHead>
               <TableHead className="text-center font-medium text-gray-600 w-[70px]">Impact</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.map((item, index) => (
+            {paymentModeData.map((item, index) => (
               <TableRow key={index} className="border-b border-gray-50 hover:bg-gray-50/50">
                 <TableCell className="font-medium py-1.5">{item.country}</TableCell>
                 <TableCell className="py-1.5">
@@ -135,34 +117,7 @@ const PaymentModeComparison: React.FC = () => {
             ))}
           </TableBody>
         </Table>
-      </div>
-      
-      {/* Pagination controls */}
-      {totalPages > 1 && (
-        <div className="flex justify-between items-center mt-2 px-1">
-          <div className="text-xs text-gray-500">
-            Page {currentPage + 1} of {totalPages}
-          </div>
-          <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-7 w-7 p-0" 
-              onClick={prevPage}
-            >
-              <ChevronLeftIcon size={14} />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-7 w-7 p-0" 
-              onClick={nextPage}
-            >
-              <ChevronRightIcon size={14} />
-            </Button>
-          </div>
-        </div>
-      )}
+      </ScrollArea>
     </div>
   );
 };
