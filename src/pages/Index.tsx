@@ -11,6 +11,8 @@ import PodCount, { podRegions } from '@/components/dashboard/PodCount';
 import CpuUtilization from '@/components/dashboard/CpuUtilization';
 import ResponseTime from '@/components/dashboard/ResponseTime';
 import ThirdPartyTimeout from '@/components/dashboard/ThirdPartyTimeout';
+import UriResponseTrend from '@/components/dashboard/UriResponseTrend';
+import ThirdPartyTimeoutTrend from '@/components/dashboard/ThirdPartyTimeoutTrend';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
@@ -40,6 +42,7 @@ const Index = () => {
   
   // Determine if we're showing region-specific data
   const isRegionSpecific = selectedRegion !== "All Instances";
+  const isEU1Selected = selectedRegion === "EU1";
   
   const handleRegionChange = (region: string) => {
     console.log("Region changed to:", region);
@@ -159,26 +162,47 @@ const Index = () => {
                 <SuccessRate />
               </DashboardCard>
               
-              <DashboardCard title="Current Pod Count" animation="animate-fade-in-delay-2">
+              <DashboardCard title={isEU1Selected ? "EU1 Pod Count" : "Current Pod Count"} animation="animate-fade-in-delay-2">
                 <PodCount />
               </DashboardCard>
             </div>
             
             {/* CPU and Response Time in a row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <DashboardCard title="Hybris CPU Utilization" animation="animate-fade-in-delay-3">
-                <CpuUtilization />
-              </DashboardCard>
-              
-              <DashboardCard title="URI Response Time" animation="animate-fade-in-delay-3">
-                <ResponseTime />
-              </DashboardCard>
-            </div>
-            
-            {/* Third-Party Timeout - full width */}
-            <DashboardCard title="Third-Party Read Timeout/Connection Timeout" animation="animate-fade-in-delay-4">
-              <ThirdPartyTimeout />
-            </DashboardCard>
+            {isEU1Selected ? (
+              <>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <DashboardCard title="Hybris CPU Trend" animation="animate-fade-in-delay-3">
+                    <CpuUtilization />
+                  </DashboardCard>
+                  
+                  <DashboardCard title="URI Response Trend" animation="animate-fade-in-delay-3">
+                    <UriResponseTrend />
+                  </DashboardCard>
+                </div>
+                
+                {/* Third-Party Timeout Trend - full width for EU1 */}
+                <DashboardCard title="Third-Party Timeouts" animation="animate-fade-in-delay-4">
+                  <ThirdPartyTimeoutTrend />
+                </DashboardCard>
+              </>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <DashboardCard title="Hybris CPU Utilization" animation="animate-fade-in-delay-3">
+                    <CpuUtilization />
+                  </DashboardCard>
+                  
+                  <DashboardCard title="URI Response Time" animation="animate-fade-in-delay-3">
+                    <ResponseTime />
+                  </DashboardCard>
+                </div>
+                
+                {/* Third-Party Timeout - full width */}
+                <DashboardCard title="Third-Party Read Timeout/Connection Timeout" animation="animate-fade-in-delay-4">
+                  <ThirdPartyTimeout />
+                </DashboardCard>
+              </>
+            )}
           </div>
         </main>
         
