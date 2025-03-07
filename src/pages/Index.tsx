@@ -1,4 +1,3 @@
-
 import React, { useState, createContext, useContext, useEffect } from 'react';
 import { ChevronDownIcon, LayoutDashboardIcon, LightbulbIcon, RefreshCcwIcon } from 'lucide-react';
 import DashboardCard from '@/components/dashboard/DashboardCard';
@@ -37,8 +36,8 @@ const Index = () => {
     toast.success('Dashboard refreshed successfully');
   };
   
-  // Create array of all regions including "All Instances" at the beginning
-  const allRegions = ["All Instances", ...podRegions.map(pod => pod.region)];
+  // Rearranged regions according to the image: All Instances, EU1, EU2, EU3, EU4, EU5, AM, AP
+  const allRegions = ["All Instances", "EU1", "EU2", "EU3", "EU4", "EU5", "AM", "AP"];
   
   // Determine if we're showing region-specific data
   const isRegionSpecific = selectedRegion !== "All Instances";
