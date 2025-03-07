@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { TimerOffIcon } from 'lucide-react';
-import { Line, LineChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Line, LineChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 // Create some dummy data that resembles the timeout chart in the image
 const timeoutData = [
@@ -18,7 +18,7 @@ const timeoutData = [
 const ThirdPartyTimeout: React.FC = () => {
   return (
     <div className="w-full">
-      <div className="flex items-center gap-1 mb-3 text-error-600">
+      <div className="flex items-center gap-1 mb-3 text-red-600">
         <TimerOffIcon size={16} />
         <span className="text-sm font-medium">Third-Party Read Timeout/Connection Timeout</span>
       </div>
@@ -31,11 +31,26 @@ const ThirdPartyTimeout: React.FC = () => {
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="time" tick={{ fontSize: 10 }} />
-            <YAxis tick={{ fontSize: 10 }} />
+            <YAxis tick={{ fontSize: 10 }} domain={[0, 15]} />
             <Tooltip contentStyle={{ fontSize: 12 }} />
-            <Legend wrapperStyle={{ fontSize: 10 }} />
-            <Line type="monotone" dataKey="payment" stroke="#8884d8" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} name="PAYPAL CUSTOMERS" />
-            <Line type="monotone" dataKey="merchant" stroke="#82ca9d" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} name="Merchants" />
+            <Line 
+              type="monotone" 
+              dataKey="payment" 
+              stroke="#8884d8" 
+              strokeWidth={2} 
+              dot={{ r: 4 }} 
+              activeDot={{ r: 6 }} 
+              name="PAYPAL CUSTOMERS" 
+            />
+            <Line 
+              type="monotone" 
+              dataKey="merchant" 
+              stroke="#82ca9d" 
+              strokeWidth={2} 
+              dot={{ r: 4 }} 
+              activeDot={{ r: 6 }} 
+              name="Merchants" 
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>

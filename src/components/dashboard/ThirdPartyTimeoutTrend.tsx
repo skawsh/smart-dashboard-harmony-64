@@ -36,13 +36,21 @@ const ThirdPartyTimeoutTrend: React.FC = () => {
             <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
             <XAxis dataKey="time" tick={{ fontSize: 10 }} />
             <YAxis domain={[0, 4]} tick={{ fontSize: 10 }} label={{ value: 'HAPI/LOS-CUSTOMER', angle: -90, position: 'insideLeft', style: { fontSize: 10, textAnchor: 'middle' }, dx: -10 }} />
-            <Tooltip contentStyle={{ fontSize: 12 }} />
+            <Tooltip 
+              contentStyle={{ fontSize: 12 }}
+              formatter={(value, name) => {
+                return [`HAPI/LOS-CUSTOMER : ${value}`, ''];
+              }}
+              labelFormatter={(label) => `${label}`}
+            />
             <Line 
               type="monotone" 
               dataKey="hapi" 
               stroke="#6D28D9" 
               name="HAPI/LOS-CUSTOMER"
               strokeWidth={2}
+              dot={{ r: 5, fill: '#6D28D9', stroke: '#6D28D9' }}
+              activeDot={{ r: 8, fill: '#6D28D9', stroke: '#6D28D9' }}
             />
           </LineChart>
         </ResponsiveContainer>
