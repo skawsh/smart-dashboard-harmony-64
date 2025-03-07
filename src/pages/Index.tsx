@@ -81,20 +81,21 @@ const Index = () => {
             <PaymentModeComparison />
           </DashboardCard>
           
-          {/* First row - 3 columns layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <DashboardCard title="Order Comparison (Today vs Yesterday)" animation="animate-fade-in">
+          {/* First row - 2 columns layout with Order Comparison and Touchpoint Comparison */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <DashboardCard title="Order Comparison (Today vs Yesterday)" animation="animate-fade-in" className="h-full">
               <OrderMetrics />
             </DashboardCard>
             
-            <DashboardCard title="Touchpoint Wise Orders Comparison" animation="animate-fade-in-delay-1">
+            <DashboardCard title="Touchpoint Wise Orders Comparison" animation="animate-fade-in-delay-1" className="h-full">
               <TouchpointComparison />
             </DashboardCard>
-            
-            <DashboardCard title="Minutes since last order (Payment mode wise)" animation="animate-fade-in-delay-2">
-              <MinutesSinceLastOrder />
-            </DashboardCard>
           </div>
+          
+          {/* Minutes since last order below the first row */}
+          <DashboardCard title="Minutes since last order (Payment mode wise)" animation="animate-fade-in-delay-2">
+            <MinutesSinceLastOrder />
+          </DashboardCard>
           
           {/* Success Rate and Pod Count in a row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
