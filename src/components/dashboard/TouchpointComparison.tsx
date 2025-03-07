@@ -71,6 +71,14 @@ const TouchpointComparison: React.FC = () => {
     name: `${item.touchpoint} (${item.country})`,
   }));
 
+  // Function to format values in the chart safely
+  const formatValueSafely = (value: number | string | undefined): string => {
+    if (typeof value === 'number') {
+      return `${(value / 1000).toFixed(1)}k`;
+    }
+    return value?.toString() || '0';
+  };
+
   return (
     <div className="w-full">
       <div className="flex justify-end mb-4 gap-2">
@@ -129,15 +137,15 @@ const TouchpointComparison: React.FC = () => {
               />
               <YAxis 
                 tick={{ fontSize: 12 }}
-                tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+                tickFormatter={(value) => typeof value === 'number' ? `${(value / 1000).toFixed(0)}k` : `${value}`}
               />
               <ChartTooltip
                 content={
                   <ChartTooltipContent
                     labelKey="touchpoint"
                     formatter={(value, name) => {
-                      if (name === 'percentage') return [`${value.toFixed(2)}%`, 'Change'];
-                      return [value.toLocaleString(), name];
+                      if (name === 'percentage') return [`${typeof value === 'number' ? value.toFixed(2) : value}%`, 'Change'];
+                      return [value ? value.toLocaleString() : '0', name];
                     }}
                   />
                 }
@@ -156,7 +164,7 @@ const TouchpointComparison: React.FC = () => {
                 <LabelList 
                   dataKey="today" 
                   position="top" 
-                  formatter={(value: number) => `${(value / 1000).toFixed(1)}k`}
+                  formatter={(value: any) => formatValueSafely(value)}
                   style={{ fontSize: 11, fill: '#6b7280' }}
                 />
               </Bar>
