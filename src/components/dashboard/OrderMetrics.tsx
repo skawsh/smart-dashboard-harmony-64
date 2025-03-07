@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowDownIcon, ArrowUpIcon, BarChart3Icon } from 'lucide-react';
+import { ArrowDownIcon, BarChart3Icon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface OrderComparisonData {
@@ -29,33 +29,32 @@ const OrderMetrics: React.FC = () => {
         </div>
       </div>
       
-      <div className="overflow-x-auto">
-        <table className="data-table">
+      <div>
+        <table className="w-full text-sm">
           <thead>
-            <tr>
-              <th className="rounded-tl-lg">Country</th>
-              <th>Today</th>
-              <th>Yesterday</th>
-              <th>Difference</th>
-              <th className="rounded-tr-lg">Percentage</th>
+            <tr className="border-b border-gray-100">
+              <th className="text-left py-2 font-medium text-gray-600">Country</th>
+              <th className="text-right py-2 font-medium text-gray-600">Today</th>
+              <th className="text-right py-2 font-medium text-gray-600">Yesterday</th>
+              <th className="text-right py-2 font-medium text-gray-600">Change</th>
             </tr>
           </thead>
           <tbody>
             {orderData.map((item, index) => (
-              <tr key={index}>
-                <td className="font-medium">{item.country}</td>
-                <td>{item.today.toLocaleString()}</td>
-                <td>{item.yesterday.toLocaleString()}</td>
-                <td className="text-error-600">{item.difference.toLocaleString()}</td>
-                <td>
+              <tr key={index} className="border-b border-gray-50 hover:bg-gray-50/50">
+                <td className="py-2.5 font-medium">{item.country}</td>
+                <td className="py-2.5 text-right">{item.today.toLocaleString()}</td>
+                <td className="py-2.5 text-right">{item.yesterday.toLocaleString()}</td>
+                <td className="py-2.5 text-right">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger className="flex items-center gap-1 text-error-600">
+                      <TooltipTrigger className="ml-auto flex items-center gap-1 text-error-600">
                         <ArrowDownIcon size={14} />
                         {Math.abs(item.percentage).toFixed(2)}%
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>Order decrease of {Math.abs(item.percentage).toFixed(2)}% compared to yesterday</p>
+                        <p className="text-xs text-gray-400">Difference: {item.difference.toLocaleString()}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

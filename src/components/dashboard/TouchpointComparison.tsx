@@ -40,40 +40,44 @@ const getTouchpointIcon = (touchpoint: string): string => {
 const TouchpointComparison: React.FC = () => {
   return (
     <div className="w-full">
-      <div className="overflow-x-auto">
-        <table className="data-table">
+      <div>
+        <table className="w-full text-sm">
           <thead>
-            <tr>
-              <th className="rounded-tl-lg">Country</th>
-              <th>
+            <tr className="border-b border-gray-100">
+              <th className="text-left py-2 font-medium text-gray-600">Country</th>
+              <th className="text-left py-2 font-medium text-gray-600">
                 <div className="flex items-center gap-1">
                   <Smartphone size={14} />
                   <span>Touchpoint</span>
                 </div>
               </th>
-              <th>Today</th>
-              <th>Yesterday</th>
-              <th>Difference</th>
-              <th className="rounded-tr-lg">% Change</th>
+              <th className="text-right py-2 font-medium text-gray-600">Today</th>
+              <th className="text-right py-2 font-medium text-gray-600">Change</th>
             </tr>
           </thead>
           <tbody>
             {touchpointData.map((item, index) => (
-              <tr key={index}>
-                <td className="font-medium">{item.country}</td>
-                <td>
+              <tr key={index} className="border-b border-gray-50 hover:bg-gray-50/50">
+                <td className="py-2.5 font-medium">{item.country}</td>
+                <td className="py-2.5">
                   <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getTouchpointIcon(item.touchpoint)}`}>
                     {item.touchpoint}
                   </span>
                 </td>
-                <td>{item.today.toLocaleString()}</td>
-                <td>{item.yesterday.toLocaleString()}</td>
-                <td className="text-error-600">{item.difference.toLocaleString()}</td>
-                <td>
-                  <div className="flex items-center gap-1 text-error-600">
-                    <ArrowDownIcon size={14} />
-                    {Math.abs(item.percentage).toFixed(2)}%
-                  </div>
+                <td className="py-2.5 text-right">{item.today.toLocaleString()}</td>
+                <td className="py-2.5 text-right">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="ml-auto flex items-center gap-1 text-error-600">
+                        <ArrowDownIcon size={14} />
+                        {Math.abs(item.percentage).toFixed(2)}%
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Yesterday: {item.yesterday.toLocaleString()}</p>
+                        <p>Difference: {item.difference.toLocaleString()}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </td>
               </tr>
             ))}

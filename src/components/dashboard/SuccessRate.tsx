@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { CheckCircleIcon, ShieldCheckIcon } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 // Types for our data structure
 interface SuccessRateData {
@@ -66,43 +67,25 @@ const SuccessRate: React.FC = () => {
         <span className="text-sm font-medium">Success Rate - Based on Third Party</span>
       </div>
       
-      <div className="overflow-x-auto">
-        <table className="data-table text-center text-xs">
-          <thead>
-            <tr>
-              <th className="rounded-tl-lg text-left">Time Slot</th>
-              <th>Adyen</th>
-              <th>Apple Pay</th>
-              <th>Cybersource</th>
-              <th>DHL</th>
-              <th>Klarna</th>
-              <th>Metro</th>
-              <th>PayPal</th>
-              <th>Router</th>
-              <th>SAFC</th>
-              <th>SAFP</th>
-              <th className="rounded-tr-lg">Wallet</th>
-            </tr>
-          </thead>
-          <tbody>
-            {successRateData.map((row, index) => (
-              <tr key={index}>
-                <td className="font-medium text-left">{row.timeSlot}</td>
-                <td className={getPercentageStyle(row.adyen)}>{row.adyen}</td>
-                <td className={getPercentageStyle(row.applepay)}>{row.applepay}</td>
-                <td className={getPercentageStyle(row.cybersource)}>{row.cybersource}</td>
-                <td className={getPercentageStyle(row.dhl)}>{row.dhl}</td>
-                <td className={getPercentageStyle(row.klarna)}>{row.klarna}</td>
-                <td className={getPercentageStyle(row.metro)}>{row.metro}</td>
-                <td className={getPercentageStyle(row.paypal)}>{row.paypal}</td>
-                <td className={getPercentageStyle(row.router)}>{row.router}</td>
-                <td className={getPercentageStyle(row.safc)}>{row.safc}</td>
-                <td className={getPercentageStyle(row.safp)}>{row.safp}</td>
-                <td className={getPercentageStyle(row.wallet)}>{row.wallet}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {successRateData.map((row, index) => (
+          <div key={index} className="bg-white/80 p-3 rounded-lg shadow-sm">
+            <div className="text-xs font-medium mb-2 text-gray-700">{row.timeSlot}</div>
+            <div className="grid grid-cols-2 gap-2">
+              <ServiceSuccessRate name="Adyen" value={row.adyen} />
+              <ServiceSuccessRate name="ApplePay" value={row.applepay} />
+              <ServiceSuccessRate name="Cybersource" value={row.cybersource} />
+              <ServiceSuccessRate name="DHL" value={row.dhl} />
+              <ServiceSuccessRate name="Klarna" value={row.klarna} />
+              <ServiceSuccessRate name="Metro" value={row.metro} />
+              <ServiceSuccessRate name="PayPal" value={row.paypal} />
+              <ServiceSuccessRate name="Router" value={row.router} />
+              <ServiceSuccessRate name="SAFC" value={row.safc} />
+              <ServiceSuccessRate name="SAFP" value={row.safp} />
+              <ServiceSuccessRate name="Wallet" value={row.wallet} />
+            </div>
+          </div>
+        ))}
       </div>
       
       <div className="flex gap-4 mt-3 text-xs text-gray-600 justify-end">
@@ -120,6 +103,26 @@ const SuccessRate: React.FC = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const ServiceSuccessRate = ({ name, value }: { name: string, value: string }) => {
+  const style = getPercentageStyle(value);
+  
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="flex justify-between items-center p-1.5 rounded text-xs">
+            <span className="font-medium">{name}</span>
+            <span className={`px-1.5 py-0.5 rounded ${style}`}>{value}</span>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{name} Success Rate: {value}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 

@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { ClockIcon } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 // Types for our data structure
 interface RegionData {
@@ -34,9 +35,9 @@ const getTimeColor = (value: string | number): string => {
   const minutes = Number(value);
   if (isNaN(minutes)) return 'text-gray-400';
   
-  if (minutes <= 5) return 'text-success-600 font-medium';
-  if (minutes <= 15) return 'text-warning-600 font-medium';
-  return 'text-error-600 font-medium';
+  if (minutes <= 5) return 'bg-success-100 text-success-700';
+  if (minutes <= 15) return 'bg-warning-100 text-warning-700';
+  return 'bg-error-100 text-error-700';
 };
 
 const formatValue = (value: string | number): string => {
@@ -52,39 +53,25 @@ const MinutesSinceLastOrder: React.FC = () => {
         <span className="text-sm font-medium">Minutes since last order (Payment mode wise)</span>
       </div>
       
-      <div className="overflow-x-auto">
-        <table className="data-table text-center">
-          <thead>
-            <tr>
-              <th className="rounded-tl-lg text-center">Instance</th>
-              <th>Adyen</th>
-              <th>COD</th>
-              <th>IDEAL2</th>
-              <th>Klarna</th>
-              <th>PayPal</th>
-              <th>Runway</th>
-              <th>ApplePay</th>
-              <th>GiftCard_idw</th>
-              <th className="rounded-tr-lg">GiftCard_dp</th>
-            </tr>
-          </thead>
-          <tbody>
-            {regionData.map((row, index) => (
-              <tr key={index}>
-                <td className="font-medium text-center">{row.region}</td>
-                <td className={getTimeColor(row.adyen)}>{formatValue(row.adyen)}</td>
-                <td className={getTimeColor(row.cod)}>{formatValue(row.cod)}</td>
-                <td className={getTimeColor(row.ideal2)}>{formatValue(row.ideal2)}</td>
-                <td className={getTimeColor(row.klarna)}>{formatValue(row.klarna)}</td>
-                <td className={getTimeColor(row.paypal)}>{formatValue(row.paypal)}</td>
-                <td className={getTimeColor(row.runway)}>{formatValue(row.runway)}</td>
-                <td className={getTimeColor(row.applepay)}>{formatValue(row.applepay)}</td>
-                <td className={getTimeColor(row.giftcard_idw)}>{formatValue(row.giftcard_idw)}</td>
-                <td className={getTimeColor(row.giftcard_dp)}>{formatValue(row.giftcard_dp)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {regionData.map((row, index) => (
+          <div key={index} className="bg-white/80 p-3 rounded-lg shadow-sm">
+            <div className="text-sm font-medium mb-2 flex items-center justify-center bg-blue-50 text-blue-700 py-1 rounded">
+              Region: {row.region}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <PaymentTime label="Adyen" value={row.adyen} />
+              <PaymentTime label="COD" value={row.cod} />
+              <PaymentTime label="IDEAL2" value={row.ideal2} />
+              <PaymentTime label="Klarna" value={row.klarna} />
+              <PaymentTime label="PayPal" value={row.paypal} />
+              <PaymentTime label="Runway" value={row.runway} />
+              <PaymentTime label="ApplePay" value={row.applepay} />
+              <PaymentTime label="GC_idw" value={row.giftcard_idw} />
+              <PaymentTime label="GC_dp" value={row.giftcard_dp} />
+            </div>
+          </div>
+        ))}
       </div>
       
       <div className="flex gap-4 mt-3 text-xs text-gray-600 justify-end">
@@ -102,6 +89,27 @@ const MinutesSinceLastOrder: React.FC = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const PaymentTime = ({ label, value }: { label: string, value: string | number }) => {
+  const colorClass = getTimeColor(value);
+  const formattedValue = formatValue(value);
+  
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="flex justify-between items-center p-1.5 rounded border border-gray-100 hover:border-gray-200">
+            <span className="text-xs font-medium">{label}</span>
+            <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${colorClass}`}>{formattedValue}</span>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{label}: {formattedValue} minutes since last order</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 

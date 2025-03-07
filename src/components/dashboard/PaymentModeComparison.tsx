@@ -26,11 +26,6 @@ const paymentModeData: PaymentComparisonData[] = [
   { time: '02:00-08:00', country: 'DE', payMode: 'GiftCard_idw', today: 89, yesterday: 241, difference: -152, percentage: -63.07, impact: 'Medium' },
   { time: '02:00-08:00', country: 'NL', payMode: 'Adyen', today: 81, yesterday: 175, difference: -94, percentage: -53.71, impact: 'Medium' },
   { time: '02:00-08:00', country: 'US', payMode: 'GiftCard', today: 23, yesterday: 69, difference: -46, percentage: -66.67, impact: 'Medium' },
-  { time: '02:00-08:00', country: 'DE', payMode: 'Klarna', today: 1835, yesterday: 17284, difference: -15449, percentage: -89.38, impact: 'Normal' },
-  { time: '02:00-08:00', country: 'DE', payMode: 'PayPal', today: 3539, yesterday: 6225, difference: -2686, percentage: -43.15, impact: 'Normal' },
-  { time: '02:00-08:00', country: 'US', payMode: 'ApplePay', today: 1270, yesterday: 2722, difference: -1452, percentage: -53.34, impact: 'Normal' },
-  { time: '02:00-08:00', country: 'AT', payMode: 'Klarna', today: 1520, yesterday: 2683, difference: -1163, percentage: -43.35, impact: 'Normal' },
-  { time: '02:00-08:00', country: 'NL', payMode: 'IDEAL', today: 778, yesterday: 1466, difference: -688, percentage: -46.93, impact: 'Normal' },
 ];
 
 const getPaymentColor = (payMode: string): string => {
@@ -50,43 +45,47 @@ const getPaymentColor = (payMode: string): string => {
 const PaymentModeComparison: React.FC = () => {
   return (
     <div className="w-full">
-      <div className="overflow-x-auto">
-        <table className="data-table">
+      <div>
+        <table className="w-full text-sm">
           <thead>
-            <tr>
-              <th className="rounded-tl-lg">Country</th>
-              <th>
+            <tr className="border-b border-gray-100">
+              <th className="text-left py-2 font-medium text-gray-600">Country</th>
+              <th className="text-left py-2 font-medium text-gray-600">
                 <div className="flex items-center gap-1">
                   <CreditCardIcon size={14} />
-                  <span>Payment Mode</span>
+                  <span>Payment</span>
                 </div>
               </th>
-              <th>Today</th>
-              <th>Yesterday</th>
-              <th>Difference</th>
-              <th>% Change</th>
-              <th className="rounded-tr-lg">Impact</th>
+              <th className="text-right py-2 font-medium text-gray-600">Today</th>
+              <th className="text-right py-2 font-medium text-gray-600">Change</th>
+              <th className="text-center py-2 font-medium text-gray-600">Impact</th>
             </tr>
           </thead>
           <tbody>
             {paymentModeData.map((item, index) => (
-              <tr key={index}>
-                <td className="font-medium">{item.country}</td>
-                <td>
+              <tr key={index} className="border-b border-gray-50 hover:bg-gray-50/50">
+                <td className="py-2.5 font-medium">{item.country}</td>
+                <td className="py-2.5">
                   <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getPaymentColor(item.payMode)}`}>
                     {item.payMode}
                   </span>
                 </td>
-                <td>{item.today.toLocaleString()}</td>
-                <td>{item.yesterday.toLocaleString()}</td>
-                <td className="text-error-600">{item.difference.toLocaleString()}</td>
-                <td>
-                  <div className="flex items-center gap-1 text-error-600">
-                    <ArrowDownIcon size={14} />
-                    {Math.abs(item.percentage).toFixed(2)}%
-                  </div>
+                <td className="py-2.5 text-right">{item.today.toLocaleString()}</td>
+                <td className="py-2.5 text-right">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="ml-auto flex items-center gap-1 text-error-600">
+                        <ArrowDownIcon size={14} />
+                        {Math.abs(item.percentage).toFixed(2)}%
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Yesterday: {item.yesterday.toLocaleString()}</p>
+                        <p>Difference: {item.difference.toLocaleString()}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </td>
-                <td>
+                <td className="py-2.5 text-center">
                   <span className={`impact-tag-${item.impact === 'Medium' ? 'medium' : 'normal'}`}>
                     {item.impact}
                   </span>
