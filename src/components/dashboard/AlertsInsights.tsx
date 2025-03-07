@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { AlertCircleIcon, AlertTriangleIcon, ArrowTrendingUpIcon, BadgeCheckIcon, BellIcon, CreditCardIcon, DollarSignIcon, GaugeIcon, ShieldAlertIcon } from 'lucide-react';
+import { AlertCircleIcon, AlertTriangleIcon, BadgeCheckIcon, BellIcon, CreditCardIcon, DollarSignIcon, GaugeIcon, ShieldAlertIcon, TrendingUpIcon } from 'lucide-react';
 
 interface AlertItem {
   icon: React.ReactNode;

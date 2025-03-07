@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowDownIcon, DevicesIcon } from 'lucide-react';
+import { ArrowDownIcon, Smartphone } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface TouchpointData {
@@ -47,7 +47,7 @@ const TouchpointComparison: React.FC = () => {
               <th className="rounded-tl-lg">Country</th>
               <th>
                 <div className="flex items-center gap-1">
-                  <DevicesIcon size={14} />
+                  <Smartphone size={14} />
                   <span>Touchpoint</span>
                 </div>
               </th>
