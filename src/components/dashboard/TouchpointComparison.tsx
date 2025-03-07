@@ -26,13 +26,18 @@ const touchpointData: TouchpointData[] = [
   { time: '02:00-08:00', country: 'AT', touchpoint: 'Tablet', today: 101, yesterday: 136, difference: -35, percentage: -25.74 },
 ];
 
-// Chart configuration for colors and labels
+// Updated chart configuration with better matching colors
 const chartConfig = {
-  IosApp: { color: '#6366f1', label: 'iOS App' },
-  AndroidApp: { color: '#10b981', label: 'Android App' },
-  Mobile: { color: '#3b82f6', label: 'Mobile' },
-  Desktop: { color: '#8b5cf6', label: 'Desktop' },
-  Tablet: { color: '#f59e0b', label: 'Tablet' },
+  IosApp: { color: '#4169E1', label: 'iOS App' },      // Royal blue for iOS
+  AndroidApp: { color: '#10b981', label: 'Android App' }, // Green for Android
+  Mobile: { color: '#3b82f6', label: 'Mobile' },       // Blue for Mobile
+  Desktop: { color: '#8b5cf6', label: 'Desktop' },     // Purple for Desktop
+  Tablet: { color: '#f59e0b', label: 'Tablet' },       // Orange for Tablet
+};
+
+// Helper function to get a lighter version of a color for the "Yesterday" bars
+const getLighterColor = (color: string): string => {
+  return `${color}80`; // 80 is the hex for 50% opacity
 };
 
 const getTouchpointIcon = (touchpoint: string): string => {
@@ -68,7 +73,7 @@ const TouchpointComparison: React.FC = () => {
     yesterday: item.yesterday,
     difference: item.difference,
     percentage: item.percentage,
-    name: `${item.touchpoint} (${item.country})`,
+    name: `${chartConfig[item.touchpoint as keyof typeof chartConfig]?.label || item.touchpoint} (${item.country})`,
   }));
 
   // Function to format values in the chart safely
@@ -150,7 +155,13 @@ const TouchpointComparison: React.FC = () => {
                   />
                 }
               />
-              <Legend verticalAlign="top" height={36} />
+              <Legend 
+                verticalAlign="top" 
+                height={36}
+                iconType="circle"
+                iconSize={8}
+                formatter={(value) => <span className="text-xs font-medium">{value}</span>}
+              />
               
               <Bar 
                 dataKey="today" 
@@ -179,7 +190,7 @@ const TouchpointComparison: React.FC = () => {
                   {chartData.map((entry, index) => (
                     <Cell 
                       key={`cell-yesterday-${index}`} 
-                      fill={`${getBarColor(entry.touchpoint)}80`} 
+                      fill={getLighterColor(getBarColor(entry.touchpoint))}
                     />
                   ))}
                 </Bar>
@@ -193,7 +204,7 @@ const TouchpointComparison: React.FC = () => {
                   {chartData.map((entry, index) => (
                     <Cell 
                       key={`cell-difference-${index}`} 
-                      fill="#ef4444" 
+                      fill={entry.difference < 0 ? "#ef4444" : "#22C55E"}
                     />
                   ))}
                 </Bar>
