@@ -1,19 +1,20 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 210 40% 98%;
+    --foreground: 222.2 47.4% 11.2%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222.2 47.4% 11.2%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 222.2 47.4% 11.2%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 221.2 83% 53.3%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -30,24 +31,17 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 221.2 83% 53.3%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -61,7 +55,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -97,5 +91,80 @@
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/70 backdrop-blur-sm rounded-xl border border-neutral-200/50;
+  }
+  
+  .impact-tag {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset;
+  }
+  
+  .impact-tag-medium {
+    @apply impact-tag bg-warning-50 text-warning-700 ring-warning-600/20;
+  }
+  
+  .impact-tag-normal {
+    @apply impact-tag bg-neutral-50 text-neutral-700 ring-neutral-600/20;
+  }
+  
+  .impact-tag-high {
+    @apply impact-tag bg-error-50 text-error-700 ring-error-600/20;
+  }
+  
+  .impact-tag-low {
+    @apply impact-tag bg-success-50 text-success-700 ring-success-600/20;
+  }
+  
+  .dashboard-heading {
+    @apply text-xl font-semibold text-gray-800 mb-2;
+  }
+  
+  .dashboard-card {
+    @apply glass-panel p-4 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden;
+  }
+  
+  .stat-card {
+    @apply glass-panel p-3 flex flex-col justify-between h-full;
+  }
+  
+  .data-table {
+    @apply w-full text-sm text-left rtl:text-right text-gray-700;
+  }
+  
+  .data-table th {
+    @apply px-3 py-2 bg-gray-50/80 font-medium text-gray-700 text-xs uppercase tracking-wider;
+  }
+  
+  .data-table td {
+    @apply px-3 py-2 bg-white/60;
+  }
+  
+  .data-table tr:hover td {
+    @apply bg-blue-50/60;
+  }
+  
+  .number-positive {
+    @apply text-success-600 font-medium;
+  }
+  
+  .number-negative {
+    @apply text-error-600 font-medium;
+  }
+  
+  .region-pod {
+    @apply flex items-center justify-center p-3 bg-white/80 rounded-lg shadow-sm;
+  }
+  
+  .region-pod-count {
+    @apply text-2xl font-bold text-success-600;
+  }
+  
+  .alert-item {
+    @apply flex items-center gap-2 p-2 rounded-md hover:bg-neutral-100/50;
   }
 }
