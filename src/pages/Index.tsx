@@ -7,20 +7,25 @@ import PaymentModeComparison from '@/components/dashboard/PaymentModeComparison'
 import TouchpointComparison from '@/components/dashboard/TouchpointComparison';
 import MinutesSinceLastOrder from '@/components/dashboard/MinutesSinceLastOrder';
 import SuccessRate from '@/components/dashboard/SuccessRate';
-import PodCount from '@/components/dashboard/PodCount';
+import PodCount, { podRegions } from '@/components/dashboard/PodCount';
 import CpuUtilization from '@/components/dashboard/CpuUtilization';
 import ResponseTime from '@/components/dashboard/ResponseTime';
 import ThirdPartyTimeout from '@/components/dashboard/ThirdPartyTimeout';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 
 const Index = () => {
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [selectedRegion, setSelectedRegion] = useState<string>("All Instances");
   
   const handleRefresh = () => {
     setLastUpdated(new Date());
     toast.success('Dashboard refreshed successfully');
   };
+  
+  // Create array of all regions including "All Instances" at the beginning
+  const allRegions = ["All Instances", ...podRegions.map(pod => pod.region)];
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -54,6 +59,27 @@ const Index = () => {
       
       {/* Main Dashboard */}
       <main className="container mx-auto px-4 py-6">
+        {/* Region Selection Tabs */}
+        <div className="mb-6">
+          <Tabs defaultValue="All Instances" onValueChange={setSelectedRegion} value={selectedRegion}>
+            <TabsList className="w-full justify-start border border-gray-200 bg-gray-50 p-0 h-auto rounded-md">
+              {allRegions.map((region) => (
+                <TabsTrigger
+                  key={region}
+                  value={region}
+                  className={`py-2 px-5 rounded-none border-b-2 ${
+                    selectedRegion === region
+                      ? 'border-blue-500 text-blue-700 font-medium'
+                      : 'border-transparent'
+                  } data-[state=active]:bg-white data-[state=active]:shadow-none`}
+                >
+                  {region}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
+        
         {/* Order Stats Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
           <div>

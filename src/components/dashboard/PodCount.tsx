@@ -9,7 +9,7 @@ interface RegionPod {
 }
 
 // Real data from the image
-const podCounts: RegionPod[] = [
+export const podRegions: RegionPod[] = [
   { region: 'AM', count: 70 },
   { region: 'AP', count: 70 },
   { region: 'EU1', count: 70 },
@@ -34,7 +34,7 @@ const PodCount: React.FC = () => {
       </div>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
-        {podCounts.map((pod, index) => (
+        {podRegions.map((pod, index) => (
           <div key={index} className="region-pod animate-scale-in" style={{ animationDelay: `${index * 0.05}s` }}>
             <div className="text-center">
               <div className="text-gray-600 font-medium mb-1">{pod.region}</div>
