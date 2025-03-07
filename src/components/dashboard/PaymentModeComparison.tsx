@@ -1,5 +1,4 @@
-
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ArrowDownIcon, ArrowUpIcon, CreditCardIcon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -36,14 +35,14 @@ const paymentModeData: PaymentComparisonData[] = [
   { time: '02:00-08:00', country: 'NL', payMode: 'IDEAL2', today: 778, yesterday: 1466, difference: -688, percentage: -46.93, impact: 'Normal' },
 ];
 
-// EU1 region-specific data extracted from the image
+// EU1 region-specific data extracted from the exact image
 const EU1PaymentModeData: PaymentComparisonData[] = [
   { time: '02:00-08:00', country: 'FR', payMode: 'PayPal', today: 173, yesterday: 195, difference: -22, percentage: -11.28, impact: 'Normal' },
   { time: '02:00-08:00', country: 'FR', payMode: 'Adyen', today: 42, yesterday: 58, difference: -16, percentage: -27.59, impact: 'Medium' },
-  { time: '02:00-08:00', country: 'FR', payMode: 'Klarna', today: 4, yesterday: 5, difference: -1, percentage: -20.00, impact: 'Medium' },
   { time: '02:00-08:00', country: 'IE', payMode: 'GiftCard', today: 2, yesterday: 6, difference: -4, percentage: -66.67, impact: 'Medium' },
-  { time: '02:00-08:00', country: 'FR', payMode: 'GiftCard', today: 7, yesterday: 7, difference: 0, percentage: 0.00, impact: 'Normal' },
   { time: '02:00-08:00', country: 'GB', payMode: 'Adyen', today: 46, yesterday: 43, difference: 3, percentage: 6.98, impact: 'Normal' },
+  { time: '02:00-08:00', country: 'FR', payMode: 'Klarna', today: 4, yesterday: 5, difference: -1, percentage: -20.00, impact: 'Medium' },
+  { time: '02:00-08:00', country: 'FR', payMode: 'GiftCard', today: 7, yesterday: 7, difference: 0, percentage: 0.00, impact: 'Normal' },
   { time: '02:00-08:00', country: 'FR', payMode: 'applepay', today: 26, yesterday: 25, difference: 1, percentage: 4.00, impact: 'Normal' },
 ];
 
@@ -59,17 +58,13 @@ const PAYMENT_COLORS: Record<string, { bg: string, text: string }> = {
 };
 
 const getPaymentColor = (payMode: string): string => {
-  // Extract the base payment type for hybrid types (e.g., GiftCard|pay_later => GiftCard)
   const basePayMode = payMode.split('|')[0];
-  
-  // Return colors for the payment method or default if not found
   return `${PAYMENT_COLORS[basePayMode]?.bg || 'bg-gray-100'} ${PAYMENT_COLORS[basePayMode]?.text || 'text-gray-700'}`;
 };
 
 const PaymentModeComparison: React.FC = () => {
   const { selectedRegion } = useContext(RegionContext);
   
-  // Select data based on region
   const dataToDisplay = selectedRegion === 'EU1' ? EU1PaymentModeData : paymentModeData;
   
   return (

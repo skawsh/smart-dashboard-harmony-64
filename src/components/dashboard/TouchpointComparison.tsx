@@ -1,5 +1,5 @@
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { ArrowDownIcon, ArrowUpIcon, Smartphone, RefreshCcw } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Legend, Cell, LabelList } from 'recharts';
@@ -72,12 +72,19 @@ const getBarColor = (touchpoint: string): string => {
 };
 
 const TouchpointComparison: React.FC = () => {
-  const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
+  const [viewMode, setViewMode] = useState<'chart' | 'table'>('table'); // Initially show table for EU1 as per image
   const [comparison, setComparison] = useState<'yesterday' | 'difference'>('yesterday');
   const { selectedRegion } = useContext(RegionContext);
 
   // Select data based on region
   const dataToUse = selectedRegion === 'EU1' ? EU1TouchpointData : touchpointData;
+
+  // Set to table view when EU1 is selected to match image
+  useEffect(() => {
+    if (selectedRegion === 'EU1') {
+      setViewMode('table');
+    }
+  }, [selectedRegion]);
 
   // Transform data for the chart
   const chartData = dataToUse.map(item => ({

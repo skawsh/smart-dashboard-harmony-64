@@ -20,9 +20,6 @@ export const podRegions: RegionPod[] = [
   { region: 'EU5', count: 70 },
 ];
 
-// Region-specific data (from the image)
-const EU1PodCount = 70;
-
 const getCountColor = (count: number): string => {
   if (count >= 70) return 'text-success-600';
   if (count >= 50) return 'text-warning-600';
@@ -32,7 +29,7 @@ const getCountColor = (count: number): string => {
 const PodCount: React.FC = () => {
   const { selectedRegion } = useContext(RegionContext);
   
-  // If EU1 is selected, show only EU1 data
+  // If EU1 is selected, show only EU1 data with fixed value from image
   const isEU1Selected = selectedRegion === "EU1";
   
   // Filter pods based on selection or show all
@@ -49,7 +46,7 @@ const PodCount: React.FC = () => {
       
       {isEU1Selected ? (
         <div className="flex flex-col items-center justify-center h-[200px]">
-          <div className="text-4xl font-bold text-green-600">{EU1PodCount}</div>
+          <div className="text-4xl font-bold text-green-600">70</div>
           <div className="text-lg text-gray-600 mt-2">EU1 Region Pod Count</div>
         </div>
       ) : (

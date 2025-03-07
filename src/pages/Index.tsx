@@ -1,5 +1,5 @@
 
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState, createContext, useContext, useEffect } from 'react';
 import { ChevronDownIcon, LayoutDashboardIcon, LightbulbIcon, RefreshCcwIcon } from 'lucide-react';
 import DashboardCard from '@/components/dashboard/DashboardCard';
 import OrderMetrics from '@/components/dashboard/OrderMetrics';
@@ -16,7 +16,12 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 
 // Create a context to share the selected region across components
-export const RegionContext = createContext({
+interface RegionContextType {
+  selectedRegion: string;
+  isRegionSpecific: boolean;
+}
+
+export const RegionContext = createContext<RegionContextType>({
   selectedRegion: "All Instances",
   isRegionSpecific: false
 });
@@ -37,6 +42,7 @@ const Index = () => {
   const isRegionSpecific = selectedRegion !== "All Instances";
   
   const handleRegionChange = (region: string) => {
+    console.log("Region changed to:", region);
     setSelectedRegion(region);
     if (region !== "All Instances") {
       toast.info(`Showing data for ${region} region`);
@@ -79,7 +85,7 @@ const Index = () => {
           {/* Region Selection Tabs */}
           <div className="mb-6">
             <Tabs value={selectedRegion} onValueChange={handleRegionChange}>
-              <TabsList className="w-full justify-start border border-gray-200 bg-gray-50 p-0 h-auto rounded-md">
+              <TabsList className="w-full justify-start border border-gray-200 bg-gray-50 p-0 h-auto rounded-md overflow-x-auto">
                 {allRegions.map((region) => (
                   <TabsTrigger
                     key={region}

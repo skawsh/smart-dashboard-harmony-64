@@ -1,5 +1,5 @@
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { ArrowDownIcon, ArrowUpIcon, BarChart2, List } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Cell, LabelList } from 'recharts';
 import { Button } from '@/components/ui/button';
@@ -29,7 +29,9 @@ const orderData: OrderData[] = [
 const EU1OrderData: OrderData[] = [
   { time: '02:00-08:00', country: 'DE', today: 237, yesterday: 237, difference: 0, percentage: 0 },
   { time: '02:00-08:00', country: 'ES', today: 57, yesterday: 57, difference: 0, percentage: 0 },
+  { time: '02:00-08:00', country: 'FR', today: 0, yesterday: 0, difference: 0, percentage: 0 },
   { time: '02:00-08:00', country: 'GB', today: 237, yesterday: 245, difference: -8, percentage: -3.27 },
+  { time: '02:00-08:00', country: 'IE', today: 0, yesterday: 0, difference: 0, percentage: 0 },
 ];
 
 // Create a map of country codes to colors
@@ -47,12 +49,19 @@ const countryColors: Record<string, string> = {
 const defaultColor = '#94A3B8';
 
 const OrderMetrics: React.FC = () => {
-  const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
+  const [viewMode, setViewMode] = useState<'chart' | 'table'>('table'); // Initially show table for EU1 as per image
   const [comparison, setComparison] = useState<'yesterday' | 'difference'>('yesterday');
   const { selectedRegion } = useContext(RegionContext);
 
   // Select data based on region
   const dataToUse = selectedRegion === 'EU1' ? EU1OrderData : orderData;
+
+  // Set to table view when EU1 is selected to match image
+  useEffect(() => {
+    if (selectedRegion === 'EU1') {
+      setViewMode('table');
+    }
+  }, [selectedRegion]);
   
   // Get total orders and calculate overall percentage change
   const totalToday = dataToUse.reduce((sum, item) => sum + item.today, 0);
@@ -249,7 +258,7 @@ const OrderMetrics: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {sortedData.map((item, index) => (
+              {dataToUse.map((item, index) => (
                 <tr key={index} className="border-b border-gray-50 hover:bg-gray-50/50">
                   <td className="py-2.5 px-3">{item.time}</td>
                   <td className="py-2.5 px-3">
