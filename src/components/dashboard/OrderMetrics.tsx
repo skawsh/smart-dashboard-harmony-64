@@ -12,12 +12,13 @@ interface OrderComparisonData {
   percentage: number;
 }
 
+// Updated data from the image
 const orderData: OrderComparisonData[] = [
-  { country: 'DE', today: 5165, yesterday: 24050, difference: -18885, percentage: -78.53 },
+  { country: 'DE', today: 13155, yesterday: 24790, difference: -11635, percentage: -46.93 },
   { country: 'US', today: 4661, yesterday: 9709, difference: -5048, percentage: -51.99 },
-  { country: 'CA', today: 1373, yesterday: 4339, difference: -2966, percentage: -68.36 },
-  { country: 'NL', today: 2166, yesterday: 4668, difference: -2502, percentage: -53.61 },
-  { country: 'AT', today: 1616, yesterday: 2762, difference: -1146, percentage: -41.49 },
+  { country: 'CA', today: 1473, yesterday: 4539, difference: -3066, percentage: -67.55 },
+  { country: 'NL', today: 2156, yesterday: 4668, difference: -2512, percentage: -53.81 },
+  { country: 'AT', today: 1618, yesterday: 2763, difference: -1145, percentage: -41.44 },
 ];
 
 const OrderMetrics: React.FC = () => {
@@ -37,19 +38,24 @@ const OrderMetrics: React.FC = () => {
               <TableHead className="font-medium text-gray-600">Country</TableHead>
               <TableHead className="text-right font-medium text-gray-600">Today</TableHead>
               <TableHead className="text-right font-medium text-gray-600">Yesterday</TableHead>
+              <TableHead className="text-right font-medium text-gray-600">Difference</TableHead>
               <TableHead className="text-right font-medium text-gray-600">Change</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {orderData.map((item, index) => (
-              <TableRow key={index} className="border-b border-gray-50 hover:bg-gray-50/50">
+              <TableRow 
+                key={index} 
+                className={`border-b border-gray-50 hover:bg-gray-50/50 ${item.country === 'CA' ? 'bg-red-50' : ''}`}
+              >
                 <TableCell className="font-medium">{item.country}</TableCell>
                 <TableCell className="text-right">{item.today.toLocaleString()}</TableCell>
                 <TableCell className="text-right">{item.yesterday.toLocaleString()}</TableCell>
+                <TableCell className="text-right">{item.difference.toLocaleString()}</TableCell>
                 <TableCell className="text-right">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger className="ml-auto flex items-center gap-1 text-error-600">
+                      <TooltipTrigger className={`ml-auto flex items-center gap-1 ${item.country === 'CA' ? 'text-red-600 font-semibold' : 'text-error-600'}`}>
                         <ArrowDownIcon size={14} />
                         {Math.abs(item.percentage).toFixed(2)}%
                       </TooltipTrigger>
