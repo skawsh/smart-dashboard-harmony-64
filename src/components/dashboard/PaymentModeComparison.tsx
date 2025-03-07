@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowDownIcon, CreditCardIcon } from 'lucide-react';
+import { ArrowDownIcon, ArrowUpIcon, CreditCardIcon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -35,18 +35,23 @@ const paymentModeData: PaymentComparisonData[] = [
   { time: '02:00-08:00', country: 'NL', payMode: 'IDEAL2', today: 778, yesterday: 1466, difference: -688, percentage: -46.93, impact: 'Normal' },
 ];
 
+// Define fixed colors for each payment method
+const PAYMENT_COLORS: Record<string, { bg: string, text: string }> = {
+  'Adyen': { bg: 'bg-purple-100', text: 'text-purple-700' },
+  'PayPal': { bg: 'bg-blue-100', text: 'text-blue-700' },
+  'Klarna': { bg: 'bg-pink-100', text: 'text-pink-700' },
+  'IDEAL2': { bg: 'bg-teal-100', text: 'text-teal-700' },
+  'GiftCard': { bg: 'bg-amber-100', text: 'text-amber-700' },
+  'GiftCard|pay_later': { bg: 'bg-amber-100', text: 'text-amber-700' },
+  'applepay': { bg: 'bg-slate-100', text: 'text-slate-700' },
+};
+
 const getPaymentColor = (payMode: string): string => {
-  const colors: Record<string, string> = {
-    'Adyen': 'bg-dashboard-adyen/10 text-dashboard-adyen',
-    'PayPal': 'bg-dashboard-paypal/10 text-dashboard-paypal',
-    'Klarna': 'bg-dashboard-klarna/10 text-dashboard-klarna',
-    'IDEAL2': 'bg-dashboard-ideal/10 text-dashboard-ideal',
-    'GiftCard': 'bg-dashboard-giftcard/10 text-dashboard-giftcard',
-    'GiftCard|pay_later': 'bg-dashboard-giftcard/10 text-dashboard-giftcard',
-    'applepay': 'bg-dashboard-apple/10 text-dashboard-apple',
-  };
+  // Extract the base payment type for hybrid types (e.g., GiftCard|pay_later => GiftCard)
+  const basePayMode = payMode.split('|')[0];
   
-  return colors[payMode] || 'bg-gray-100 text-gray-700';
+  // Return colors for the payment method or default if not found
+  return `${PAYMENT_COLORS[basePayMode]?.bg || 'bg-gray-100'} ${PAYMENT_COLORS[basePayMode]?.text || 'text-gray-700'}`;
 };
 
 const PaymentModeComparison: React.FC = () => {
@@ -95,11 +100,20 @@ const PaymentModeComparison: React.FC = () => {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger className="ml-auto flex items-center gap-1 text-error-600">
-                        <ArrowDownIcon size={14} />
+                        {item.percentage < 0 ? (
+                          <ArrowDownIcon size={14} />
+                        ) : (
+                          <ArrowUpIcon size={14} className="text-green-600" />
+                        )}
                         {Math.abs(item.percentage).toFixed(1)}%
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Order decrease of {Math.abs(item.percentage).toFixed(2)}% compared to yesterday</p>
+                        <p>
+                          {item.percentage < 0 
+                            ? `Order decrease of ${Math.abs(item.percentage).toFixed(2)}% compared to yesterday`
+                            : `Order increase of ${Math.abs(item.percentage).toFixed(2)}% compared to yesterday`
+                          }
+                        </p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
