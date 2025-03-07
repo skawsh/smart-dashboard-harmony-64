@@ -11,7 +11,6 @@ import PodCount from '@/components/dashboard/PodCount';
 import CpuUtilization from '@/components/dashboard/CpuUtilization';
 import ResponseTime from '@/components/dashboard/ResponseTime';
 import ThirdPartyTimeout from '@/components/dashboard/ThirdPartyTimeout';
-import AlertsInsights from '@/components/dashboard/AlertsInsights';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -109,19 +108,15 @@ const Index = () => {
           
           {/* Third column */}
           <div className="space-y-6">
-            <DashboardCard title="Alerts & Insights" className="h-[300px]" animation="animate-fade-in-delay-2">
-              <AlertsInsights />
-            </DashboardCard>
-            
-            <DashboardCard title="Success Rate - Based on Third Party" animation="animate-fade-in-delay-3">
+            <DashboardCard title="Success Rate - Based on Third Party" animation="animate-fade-in-delay-2">
               <SuccessRate />
             </DashboardCard>
             
-            <DashboardCard title="Hybris CPU Utilization" animation="animate-fade-in-delay-4">
+            <DashboardCard title="Hybris CPU Utilization" animation="animate-fade-in-delay-3">
               <CpuUtilization />
             </DashboardCard>
             
-            <DashboardCard title="Third-Party Read Timeout/Connection Timeout" animation="animate-fade-in-delay-5">
+            <DashboardCard title="Third-Party Read Timeout/Connection Timeout" animation="animate-fade-in-delay-4">
               <ThirdPartyTimeout />
             </DashboardCard>
           </div>
